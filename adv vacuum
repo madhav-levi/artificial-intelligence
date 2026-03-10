@@ -1,0 +1,69 @@
+def is_goal(state):
+    """Check if all rooms are clean"""
+    for room in state:
+        if state[room] == "Dirty":
+            return False
+    return True
+
+
+def display_state(location, state):
+    print("\nCurrent Location:", location)
+    print("Room Status:")
+    for room in state:
+        print(f"  Room {room}: {state[room]}")
+
+
+def vacuum_world():
+    print("=== Vacuum Cleaner World (User Defined) ===")
+
+    # -------- USER INPUT SECTION --------
+    n = int(input("Enter number of rooms: "))
+
+    rooms = []
+    state = {}
+
+    print("Enter room names:")
+    for i in range(n):
+        room = input(f"Room {i+1} name: ")
+        rooms.append(room)
+
+    print("\nEnter initial state of each room (Dirty/Clean):")
+    for room in rooms:
+        condition = input(f"Is room {room} Dirty or Clean? ").capitalize()
+        while condition not in ["Dirty", "Clean"]:
+            condition = input("Please enter only 'Dirty' or 'Clean': ").capitalize()
+        state[room] = condition
+
+    location = input("\nEnter starting room for vacuum: ")
+    while location not in rooms:
+        location = input("Invalid room. Enter a valid starting room: ")
+
+    print("\n--- Starting Cleaning Process ---")
+
+    # -------- VACUUM AGENT LOGIC --------
+    steps = 0
+    while not is_goal(state):
+        display_state(location, state)
+        steps += 1
+
+        if state[location] == "Dirty":
+            print("Action: Suck (Cleaning room)")
+            state[location] = "Clean"
+        else:
+            # Move to next room in list
+            current_index = rooms.index(location)
+            next_index = (current_index + 1) % len(rooms)
+            next_room = rooms[next_index]
+            print(f"Action: Move from {location} to {next_room}")
+            location = next_room
+
+    # -------- FINAL OUTPUT --------
+    print("\n--- Goal Reached ---")
+    print("Final State of Rooms:")
+    for room in state:
+        print(f"Room {room}: {state[room]}")
+    print(f"All rooms are clean! Total steps taken: {steps}")
+
+
+# Run the simulation
+vacuum_world()
